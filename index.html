@@ -26,19 +26,27 @@
         async function generateScript() {
             const topic = document.getElementById("topic").value;
             const style = document.getElementById("style").value;
-            const apiKey = "AIzaSyDK2e8fsW5jO47gcyWbunkeImRgzzL2U9I"; // Replace with your API key
+            const apiKey = "AIzaSyDK2e8fsW5jO47gcyWbunkeImRgzzL2U9I"; // Replace with your actual API key
 
             const prompt = `Write a 30,000-word script on ${topic} in ${style} style.`;
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=${apiKey}`;
 
-            const response = await fetch(apiUrl, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt: { text: prompt } })
-            });
+            // Use a CORS proxy (Free)
+            const proxyUrl = "https://api.allorigins.win/raw?url=";
 
-            const data = await response.json();
-            document.getElementById("scriptOutput").value = data.candidates?.[0]?.text || "Failed to generate script.";
+            try {
+                const response = await fetch(proxyUrl + encodeURIComponent(apiUrl), {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: { text: prompt } })
+                });
+
+                const data = await response.json();
+                document.getElementById("scriptOutput").value = data.candidates?.[0]?.text || "Failed to generate script.";
+            } catch (error) {
+                console.error(error);
+                document.getElementById("scriptOutput").value = "Error: Could not connect to AI API.";
+            }
         }
     </script>
 </body>
