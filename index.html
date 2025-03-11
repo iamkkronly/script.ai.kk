@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Video Script Writer</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        textarea { width: 90%; height: 400px; margin-top: 10px; }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+        input, select { padding: 10px; font-size: 16px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>AI Video Script Writer</h1>
+    <input type="text" id="topic" placeholder="Enter script topic">
+    <select id="style">
+        <option value="documentary">Documentary</option>
+        <option value="movie">Movie</option>
+        <option value="animated">Animated</option>
+    </select>
+    <button onclick="generateScript()">Generate Script</button>
+    <textarea id="scriptOutput" placeholder="Your script will appear here..."></textarea>
+
+    <script>
+        async function generateScript() {
+            const topic = document.getElementById("topic").value;
+            const style = document.getElementById("style").value;
+            const apiKey = "AIzaSyDK2e8fsW5jO47gcyWbunkeImRgzzL2U9I"; // Replace with your API key
+
+            const prompt = `Write a 30,000-word script on ${topic} in ${style} style.`;
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText?key=${apiKey}`;
+
+            const response = await fetch(apiUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt: { text: prompt } })
+            });
+
+            const data = await response.json();
+            document.getElementById("scriptOutput").value = data.candidates?.[0]?.text || "Failed to generate script.";
+        }
+    </script>
+</body>
+</html>
